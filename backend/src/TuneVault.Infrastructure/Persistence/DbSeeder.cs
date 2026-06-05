@@ -6,7 +6,7 @@ namespace TuneVault.Infrastructure.Persistence;
 
 public static class DbSeeder
 {
-    public static async Task SeedAsync(TuneVaultDbContext dbContext, CancellationToken cancellationToken = default)
+    public static async Task SeedAsync(AppDbContext dbContext, CancellationToken cancellationToken = default)
     {
         await dbContext.Database.MigrateAsync(cancellationToken);
 
@@ -25,25 +25,26 @@ public static class DbSeeder
         var mediaItem = new MediaItem
         {
             Title = "Starter Track",
+            Artist = "TuneVault",
+            Genre = "Demo",
             Description = "Seeded audio content.",
-            MediaUrl = "https://cdn.example.com/audio/starter-track.mp3",
-            ThumbnailUrl = "https://cdn.example.com/images/starter-track.jpg",
-            DurationSeconds = 182,
-            MediaType = MediaType.Audio,
-            UploadedBy = user
+            FilePath = "https://cdn.example.com/audio/starter-track.mp3",
+            Duration = 182,
+            FileType = MediaFileType.Audio,
+            Owner = user
         };
 
         var playlist = new Playlist
         {
-            Name = "Getting Started",
+            Title = "Getting Started",
             Owner = user,
             IsPublic = true,
-            PlaylistMediaItems =
+            Tracks =
             [
-                new PlaylistMedia
+                new PlaylistTrack
                 {
                     MediaItem = mediaItem,
-                    Order = 1
+                    Position = 1
                 }
             ]
         };

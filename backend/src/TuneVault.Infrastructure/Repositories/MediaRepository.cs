@@ -7,9 +7,9 @@ namespace TuneVault.Infrastructure.Repositories;
 
 public class MediaRepository : IMediaRepository
 {
-    private readonly TuneVaultDbContext _dbContext;
+    private readonly AppDbContext _dbContext;
 
-    public MediaRepository(TuneVaultDbContext dbContext)
+    public MediaRepository(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -18,7 +18,7 @@ public class MediaRepository : IMediaRepository
     {
         return await _dbContext.MediaItems
             .AsNoTracking()
-            .OrderByDescending(x => x.CreatedAtUtc)
+            .OrderByDescending(x => x.CreatedAt)
             .ToListAsync(cancellationToken);
     }
 
@@ -36,7 +36,7 @@ public class MediaRepository : IMediaRepository
             _dbContext.Users.Add(defaultUser);
         }
 
-        mediaItem.UploadedById = defaultUser.Id;
+        mediaItem.OwnerId = defaultUser.Id;
 
         _dbContext.MediaItems.Add(mediaItem);
         await _dbContext.SaveChangesAsync(cancellationToken);

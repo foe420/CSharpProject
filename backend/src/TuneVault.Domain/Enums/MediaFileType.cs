@@ -1,6 +1,6 @@
 namespace TuneVault.Domain.Enums;
 
-public enum MediaType
+public enum MediaFileType
 {
     Audio = 1,
     Video = 2

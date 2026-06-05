@@ -20,11 +20,13 @@ public class GetMediaItemsQueryHandler : IRequestHandler<GetMediaItemsQuery, IRe
         {
             Id = m.Id,
             Title = m.Title,
+            Artist = m.Artist,
+            Genre = m.Genre,
+            FilePath = m.FilePath,
+            FileType = m.FileType,
+            Duration = m.Duration,
             Description = m.Description,
-            MediaUrl = m.MediaUrl,
-            ThumbnailUrl = m.ThumbnailUrl,
-            MediaType = m.MediaType,
-            DurationSeconds = m.DurationSeconds
+            CreatedAt = m.CreatedAt
         }).ToList();
     }
 }

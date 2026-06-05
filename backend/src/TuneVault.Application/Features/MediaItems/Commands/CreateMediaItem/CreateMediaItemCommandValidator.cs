@@ -7,8 +7,10 @@ public class CreateMediaItemCommandValidator : AbstractValidator<CreateMediaItem
     public CreateMediaItemCommandValidator()
     {
         RuleFor(x => x.Title).NotEmpty().MaximumLength(200);
-        RuleFor(x => x.MediaUrl).NotEmpty().MaximumLength(1000);
-        RuleFor(x => x.ThumbnailUrl).NotEmpty().MaximumLength(1000);
-        RuleFor(x => x.DurationSeconds).GreaterThan(0);
+        RuleFor(x => x.Artist).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.Genre).MaximumLength(100).When(x => !string.IsNullOrWhiteSpace(x.Genre));
+        RuleFor(x => x.FilePath).NotEmpty();
+        RuleFor(x => x.Duration).GreaterThan(0);
+        RuleFor(x => x.Description).MaximumLength(1000).When(x => !string.IsNullOrWhiteSpace(x.Description));
     }
 }
