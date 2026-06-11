@@ -24,6 +24,7 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // === User ===
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(x => x.Id);
@@ -32,6 +33,7 @@ public class AppDbContext : DbContext
             entity.HasIndex(x => x.Email).IsUnique();
         });
 
+        // === UserProfile ===
         modelBuilder.Entity<UserProfile>(entity =>
         {
             entity.HasKey(x => x.UserId);
@@ -43,6 +45,7 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+        // === MediaItem ===
         modelBuilder.Entity<MediaItem>(entity =>
         {
             entity.HasKey(x => x.Id);
@@ -61,6 +64,7 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
+        // === Playlist ===
         modelBuilder.Entity<Playlist>(entity =>
         {
             entity.HasKey(x => x.Id);
@@ -74,6 +78,7 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+        // === PlaylistTrack ===
         modelBuilder.Entity<PlaylistTrack>(entity =>
         {
             entity.HasKey(x => new { x.PlaylistId, x.MediaItemId });
@@ -90,6 +95,7 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
+        // === MediaShare ===
         modelBuilder.Entity<MediaShare>(entity =>
         {
             entity.HasKey(x => x.Id);
@@ -108,14 +114,15 @@ public class AppDbContext : DbContext
             entity.HasOne(x => x.MediaItem)
                 .WithMany(x => x.MediaShares)
                 .HasForeignKey(x => x.MediaItemId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);   // Better than Cascade for nullable
 
             entity.HasOne(x => x.Playlist)
                 .WithMany(x => x.MediaShares)
                 .HasForeignKey(x => x.PlaylistId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
+        // === Notification ===
         modelBuilder.Entity<Notification>(entity =>
         {
             entity.HasKey(x => x.Id);
@@ -130,6 +137,7 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+        // === Favorite ===
         modelBuilder.Entity<Favorite>(entity =>
         {
             entity.HasKey(x => new { x.UserId, x.MediaItemId });
@@ -146,6 +154,7 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+        // === PlayHistory ===
         modelBuilder.Entity<PlayHistory>(entity =>
         {
             entity.HasKey(x => x.Id);
@@ -162,6 +171,7 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+        // === Follow ===
         modelBuilder.Entity<Follow>(entity =>
         {
             entity.HasKey(x => new { x.FollowerId, x.FolloweeId });
