@@ -6,9 +6,11 @@ public class MediaItemDto
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public string MediaUrl { get; set; } = string.Empty;
-    public string ThumbnailUrl { get; set; } = string.Empty;
-    public MediaType MediaType { get; set; }
-    public int DurationSeconds { get; set; }
+    public string Artist { get; set; } = string.Empty;
+    public string? Genre { get; set; }
+    public string FilePath { get; set; } = string.Empty;
+    public MediaFileType FileType { get; set; }
+    public int Duration { get; set; }
+    public string? Description { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

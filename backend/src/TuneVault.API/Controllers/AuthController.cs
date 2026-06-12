@@ -1,52 +1,32 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using TuneVault.API.Models;
+using TuneVault.Application.Auth.Login;
+using TuneVault.Application.Auth.Register;
 
 namespace TuneVault.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
+    private readonly IMediator _mediator;
 
-    public AuthController(IConfiguration configuration)
+    public AuthController(IMediator mediator)
     {
-        _configuration = configuration;
+        _mediator = mediator;
+    }
+
+    [HttpPost("register")]
+    public async Task<ActionResult<RegisterResponseDto>> Register([FromBody] RegisterCommand command, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(command, cancellationToken);
+        return Ok(response);
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequest request)
+    public async Task<ActionResult<LoginResponseDto>> Login([FromBody] LoginCommand command, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
-        {
-            return BadRequest("Email and password are required.");
-        }
-
-        var jwtSection = _configuration.GetSection("Jwt");
-        var key = jwtSection["Key"] ?? "TuneVaultDevKey_ChangeMe_1234567890";
-
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
-            new(ClaimTypes.Email, request.Email),
-            new(ClaimTypes.Name, request.Email)
-        };
-
-        var credentials = new SigningCredentials(
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
-            SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: jwtSection["Issuer"],
-            audience: jwtSection["Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddHours(3),
-            signingCredentials: credentials);
-
-        return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+        var response = await _mediator.Send(command, cancellationToken);
+        return Ok(response);
     }
 }

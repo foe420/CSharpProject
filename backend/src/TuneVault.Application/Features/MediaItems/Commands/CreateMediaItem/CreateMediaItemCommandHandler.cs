@@ -19,11 +19,12 @@ public class CreateMediaItemCommandHandler : IRequestHandler<CreateMediaItemComm
         var mediaItem = new MediaItem
         {
             Title = request.Title,
-            Description = request.Description,
-            MediaUrl = request.MediaUrl,
-            ThumbnailUrl = request.ThumbnailUrl,
-            DurationSeconds = request.DurationSeconds,
-            MediaType = request.MediaType
+            Artist = request.Artist,
+            Genre = request.Genre,
+            FilePath = request.FilePath,
+            FileType = request.FileType,
+            Duration = request.Duration,
+            Description = request.Description
         };
 
         var created = await _mediaRepository.AddAsync(mediaItem, cancellationToken);
@@ -32,11 +33,13 @@ public class CreateMediaItemCommandHandler : IRequestHandler<CreateMediaItemComm
         {
             Id = created.Id,
             Title = created.Title,
+            Artist = created.Artist,
+            Genre = created.Genre,
+            FilePath = created.FilePath,
+            FileType = created.FileType,
+            Duration = created.Duration,
             Description = created.Description,
-            MediaUrl = created.MediaUrl,
-            ThumbnailUrl = created.ThumbnailUrl,
-            DurationSeconds = created.DurationSeconds,
-            MediaType = created.MediaType
+            CreatedAt = created.CreatedAt
         };
     }
 }
