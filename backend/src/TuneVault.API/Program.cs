@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using TuneVault.Application.DependencyInjection;
+using TuneVault.Infrastructure.Auth;
 using TuneVault.Infrastructure.DependencyInjection;
 using TuneVault.Infrastructure.Persistence;
 using TuneVault.API.Hubs;
@@ -18,8 +19,12 @@ builder.Services.AddSignalR();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-var jwtSection = builder.Configuration.GetSection("Jwt");
-var jwtKey = jwtSection["Key"] ?? "TuneVaultDevKey_ChangeMe_1234567890";
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
+    ?? throw new InvalidOperationException("JwtSettings section was not found.");
+
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+
+var jwtKey = jwtSettings.Key;
 var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
 builder.Services
@@ -29,13 +34,14 @@ builder.Services
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = jwtSection["Issuer"],
+            ValidIssuer = jwtSettings.Issuer,
             ValidateAudience = true,
-            ValidAudience = jwtSection["Audience"],
+            ValidAudience = jwtSettings.Audience,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = signingKey,
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromMinutes(2)
+            ClockSkew = TimeSpan.FromMinutes(2),
+            RoleClaimType = "role"
         };
 
         options.Events = new JwtBearerEvents
