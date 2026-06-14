@@ -13,10 +13,7 @@ public sealed class JwtTokenService : IJwtTokenService
 {
     private readonly JwtSettings _settings;
 
-    public JwtTokenService(IOptions<JwtSettings> options)
-    {
-        _settings = options.Value;
-    }
+    public JwtTokenService(IOptions<JwtSettings> options) => _settings = options.Value;
 
     public JwtTokenResult GenerateToken(ApplicationUser user)
     {

@@ -8,10 +8,7 @@ public sealed class UserProfileRepository : IUserProfileRepository
 {
     private readonly AppDbContext _dbContext;
 
-    public UserProfileRepository(AppDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    public UserProfileRepository(AppDbContext dbContext) => _dbContext = dbContext;
 
     public async Task<UserProfile> AddAsync(UserProfile userProfile, CancellationToken cancellationToken = default)
     {

@@ -7,10 +7,7 @@ public class GetMediaItemsQueryHandler : IRequestHandler<GetMediaItemsQuery, IRe
 {
     private readonly IMediaRepository _mediaRepository;
 
-    public GetMediaItemsQueryHandler(IMediaRepository mediaRepository)
-    {
-        _mediaRepository = mediaRepository;
-    }
+    public GetMediaItemsQueryHandler(IMediaRepository mediaRepository) => _mediaRepository = mediaRepository;
 
     public async Task<IReadOnlyList<MediaItemDto>> Handle(GetMediaItemsQuery request, CancellationToken cancellationToken)
     {

@@ -9,10 +9,7 @@ public class MediaRepository : IMediaRepository
 {
     private readonly AppDbContext _dbContext;
 
-    public MediaRepository(AppDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    public MediaRepository(AppDbContext dbContext) => _dbContext = dbContext;
 
     public async Task<IReadOnlyList<MediaItem>> GetLibraryAsync(CancellationToken cancellationToken)
     {
