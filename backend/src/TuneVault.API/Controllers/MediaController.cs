@@ -47,6 +47,7 @@ public class MediaController : ControllerBase
         var userId =
             User.FindFirstValue(
                 ClaimTypes.NameIdentifier);
+        Console.WriteLine($"=== UserId from token: {userId} ===");
 
         if (string.IsNullOrWhiteSpace(userId))
         {
