@@ -11,10 +11,7 @@ public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public AuthController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public AuthController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost("register")]
     public async Task<ActionResult<RegisterResponseDto>> Register([FromBody] RegisterCommand command, CancellationToken cancellationToken)

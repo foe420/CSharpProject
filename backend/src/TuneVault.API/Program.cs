@@ -1,5 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -8,12 +6,48 @@ using TuneVault.Infrastructure.Auth;
 using TuneVault.Infrastructure.DependencyInjection;
 using TuneVault.Infrastructure.Persistence;
 using TuneVault.API.Hubs;
+using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc(
+        "v1",
+        new OpenApiInfo
+        {
+            Title = "TuneVault API",
+            Version = "v1"
+        });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,  // ĐỔI TỪ Http THÀNH ApiKey
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter: Bearer {your JWT token}"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 builder.Services.AddSignalR();
 
 builder.Services.AddApplication();
@@ -35,13 +69,17 @@ builder.Services
         {
             ValidateIssuer = true,
             ValidIssuer = jwtSettings.Issuer,
+
             ValidateAudience = true,
             ValidAudience = jwtSettings.Audience,
+
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = signingKey,
+
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromMinutes(2),
-            RoleClaimType = "role"
+
+            NameClaimType = ClaimTypes.NameIdentifier,
+            RoleClaimType = ClaimTypes.Role
         };
 
         options.Events = new JwtBearerEvents

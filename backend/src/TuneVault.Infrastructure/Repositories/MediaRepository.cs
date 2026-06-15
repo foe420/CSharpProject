@@ -9,10 +9,7 @@ public class MediaRepository : IMediaRepository
 {
     private readonly AppDbContext _dbContext;
 
-    public MediaRepository(AppDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    public MediaRepository(AppDbContext dbContext) => _dbContext = dbContext;
 
     public async Task<IReadOnlyList<MediaItem>> GetLibraryAsync(CancellationToken cancellationToken)
     {
@@ -24,23 +21,44 @@ public class MediaRepository : IMediaRepository
 
     public async Task<MediaItem> AddAsync(MediaItem mediaItem, CancellationToken cancellationToken)
     {
-        var defaultUser = await _dbContext.Users.FirstOrDefaultAsync(cancellationToken);
-        if (defaultUser is null)
+        // Kiểm tra xem OwnerId có tồn tại trong bảng Users không
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == mediaItem.OwnerId, cancellationToken);
+        
+        if (user == null)
         {
-            defaultUser = new User
+            // Nếu không có, tìm ApplicationUser tương ứng
+            var appUser = await _dbContext.ApplicationUsers
+                .FirstOrDefaultAsync(u => u.Id == mediaItem.OwnerId, cancellationToken);
+            
+            if (appUser != null)
             {
-                UserName = "demo",
-                Email = "demo@tunevault.local",
-                PasswordHash = "seed-password-hash"
-            };
-            _dbContext.Users.Add(defaultUser);
+                // Tạo user mới trong bảng Users với CÙNG Id
+                user = new User
+                {
+                    Id = appUser.Id,  // Dùng cùng Id
+                    UserName = appUser.UserName ?? appUser.Email,
+                    Email = appUser.Email,
+                    PasswordHash = appUser.PasswordHash,
+                    CreatedAtUtc = appUser.CreatedAtUtc
+                };
+                _dbContext.Users.Add(user);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+                Console.WriteLine($"=== Created missing User with Id: {user.Id} ===");
+            }
+            else
+            {
+                // Fallback: lấy user đầu tiên
+                user = await _dbContext.Users.FirstOrDefaultAsync(cancellationToken);
+                if (user != null)
+                {
+                    mediaItem.OwnerId = user.Id;
+                }
+            }
         }
-
-        mediaItem.OwnerId = defaultUser.Id;
 
         _dbContext.MediaItems.Add(mediaItem);
         await _dbContext.SaveChangesAsync(cancellationToken);
-
         return mediaItem;
     }
 }

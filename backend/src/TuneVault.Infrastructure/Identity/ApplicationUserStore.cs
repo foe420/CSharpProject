@@ -12,10 +12,7 @@ public sealed class ApplicationUserStore :
 {
     private readonly AppDbContext _dbContext;
 
-    public ApplicationUserStore(AppDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    public ApplicationUserStore(AppDbContext dbContext) => _dbContext = dbContext;
 
     public void Dispose()
     {

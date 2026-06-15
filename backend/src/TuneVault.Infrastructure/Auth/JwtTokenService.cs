@@ -13,10 +13,7 @@ public sealed class JwtTokenService : IJwtTokenService
 {
     private readonly JwtSettings _settings;
 
-    public JwtTokenService(IOptions<JwtSettings> options)
-    {
-        _settings = options.Value;
-    }
+    public JwtTokenService(IOptions<JwtSettings> options) => _settings = options.Value;
 
     public JwtTokenResult GenerateToken(ApplicationUser user)
     {
@@ -24,9 +21,11 @@ public sealed class JwtTokenService : IJwtTokenService
 
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new(JwtRegisteredClaimNames.Email, user.Email),
-            new("role", user.Role)
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Role, user.Role),
+
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString())
         };
 
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Key));

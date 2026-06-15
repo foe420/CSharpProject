@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Identity;
 using TuneVault.Application.Interfaces.Persistence;
 using TuneVault.Application.Interfaces.Services;
 using TuneVault.Domain.Entities;
@@ -9,6 +8,7 @@ using TuneVault.Infrastructure.Auth;
 using TuneVault.Infrastructure.Identity;
 using TuneVault.Infrastructure.Persistence;
 using TuneVault.Infrastructure.Repositories;
+using TuneVault.Infrastructure.Services;
 
 namespace TuneVault.Infrastructure.DependencyInjection;
 
@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IMediaRepository, MediaRepository>();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
 
         return services;
     }
