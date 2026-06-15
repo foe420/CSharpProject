@@ -9,10 +9,7 @@ public class CreateMediaItemCommandHandler : IRequestHandler<CreateMediaItemComm
 {
     private readonly IMediaRepository _mediaRepository;
 
-    public CreateMediaItemCommandHandler(IMediaRepository mediaRepository)
-    {
-        _mediaRepository = mediaRepository;
-    }
+    public CreateMediaItemCommandHandler(IMediaRepository mediaRepository) => _mediaRepository = mediaRepository;
 
     public async Task<MediaItemDto> Handle(CreateMediaItemCommand request, CancellationToken cancellationToken)
     {
