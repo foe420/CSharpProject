@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TuneVault.Application.Interfaces.Persistence;
 using TuneVault.Domain.Entities;
+using TuneVault.Domain.Enums;
 using TuneVault.Infrastructure.Persistence;
 
 namespace TuneVault.Infrastructure.Repositories;
@@ -60,5 +61,64 @@ public class MediaRepository : IMediaRepository
         _dbContext.MediaItems.Add(mediaItem);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return mediaItem;
+    }
+
+    public async Task<MediaItem?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _dbContext.MediaItems
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public async Task<(IReadOnlyList<MediaItem> Items, int TotalCount)> SearchAsync(
+        string? term, 
+        MediaFileType? fileType, 
+        int pageNumber, 
+        int pageSize, 
+        CancellationToken cancellationToken)
+    {
+        var query = _dbContext.MediaItems.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(term))
+        {
+            var cleanedTerm = term.Trim().ToLower();
+            query = query.Where(x => x.Title.ToLower().Contains(cleanedTerm) ||
+                                     x.Artist.ToLower().Contains(cleanedTerm) ||
+                                     (x.Genre != null && x.Genre.ToLower().Contains(cleanedTerm)));
+        }
+
+        if (fileType.HasValue)
+        {
+            query = query.Where(x => x.FileType == fileType.Value);
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .OrderByDescending(x => x.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalCount);
+    }
+
+    public async Task<IReadOnlyList<MediaItem>> GetTrendingAsync(
+        int count, 
+        CancellationToken cancellationToken)
+    {
+        var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
+
+        return await _dbContext.MediaItems
+            .AsNoTracking()
+            .Select(mi => new
+            {
+                MediaItem = mi, // 1. Count play history records in the last 7 days:
+                PlayCount = mi.PlayHistoryEntries.Count(ph => ph.PlayedAt >= sevenDaysAgo)
+            })
+            .OrderByDescending(x => x.PlayCount) // 2. Sort by play count (highest first)
+            .ThenByDescending(x => x.MediaItem.CreatedAt) // 3. Then by created date (newest first)
+            .Take(count) // 4. Take the top N results
+            .Select(x => x.MediaItem)
+            .ToListAsync(cancellationToken);
     }
 }

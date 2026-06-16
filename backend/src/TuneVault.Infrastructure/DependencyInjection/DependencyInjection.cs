@@ -32,6 +32,7 @@ public static class DependencyInjection
         .AddUserStore<ApplicationUserStore>();
 
         services.AddScoped<IMediaRepository, MediaRepository>();
+        services.AddScoped<IPlaylistRepository, PlaylistRepository>();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
