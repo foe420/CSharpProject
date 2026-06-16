@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using TuneVault.Application.Features.MediaItems.Commands.CreateMediaItem;
 using TuneVault.Application.Features.MediaItems.Queries.GetMediaItems;
 using TuneVault.Application.Features.MediaItems.Commands.UploadMedia;
+using TuneVault.Application.Features.MediaItems.Queries.SearchMedia;
+using TuneVault.Application.Features.MediaItems.Queries.GetTrendingMedia;
+using TuneVault.Application.Common.Models;
+using TuneVault.Application.Features.Playlists.Dtos;
+using TuneVault.Domain.Enums;
 using TuneVault.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -101,5 +106,26 @@ public class MediaController : ControllerBase
             stream,
             contentType,
             enableRangeProcessing: true);
+    }
+
+    [HttpGet("search")]
+    [AllowAnonymous]
+    public async Task<ActionResult<PagedResult<MediaItemSummaryDto>>> Search(
+        [FromQuery] string? term,
+        [FromQuery] MediaFileType? fileType,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _mediator.Send(new SearchMediaQuery(term, fileType, page, pageSize), cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("trending")]
+    [AllowAnonymous]
+    public async Task<ActionResult<IReadOnlyList<MediaItemSummaryDto>>> GetTrending(CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetTrendingMediaQuery(), cancellationToken);
+        return Ok(result);
     }
 }
