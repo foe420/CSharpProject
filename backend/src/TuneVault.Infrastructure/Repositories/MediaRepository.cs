@@ -61,4 +61,10 @@ public class MediaRepository : IMediaRepository
         await _dbContext.SaveChangesAsync(cancellationToken);
         return mediaItem;
     }
+
+    public async Task<MediaItem?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _dbContext.MediaItems
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
 }

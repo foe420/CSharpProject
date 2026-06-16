@@ -9,6 +9,8 @@ using TuneVault.API.Hubs;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 
+using TuneVault.API.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -103,6 +105,8 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -120,7 +124,8 @@ app.MapHub<NotificationHub>("/hubs/notifications");
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await DbSeeder.SeedAsync(dbContext);
+    var passwordHasher = scope.ServiceProvider.GetService<Microsoft.AspNetCore.Identity.IPasswordHasher<TuneVault.Domain.Entities.ApplicationUser>>();
+    await DbSeeder.SeedAsync(dbContext, passwordHasher);
 }
 
 app.Run();
