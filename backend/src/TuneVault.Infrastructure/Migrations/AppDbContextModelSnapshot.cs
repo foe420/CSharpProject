@@ -79,7 +79,7 @@ namespace TuneVault.Infrastructure.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique();
 
-                    b.ToTable("ApplicationUsers");
+                    b.ToTable("ApplicationUsers", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.Favorite", b =>
@@ -97,7 +97,7 @@ namespace TuneVault.Infrastructure.Migrations
 
                     b.HasIndex("MediaItemId");
 
-                    b.ToTable("Favorites");
+                    b.ToTable("Favorites", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.Follow", b =>
@@ -115,7 +115,7 @@ namespace TuneVault.Infrastructure.Migrations
 
                     b.HasIndex("FolloweeId");
 
-                    b.ToTable("Follows");
+                    b.ToTable("Follows", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.MediaItem", b =>
@@ -162,7 +162,7 @@ namespace TuneVault.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("MediaItems");
+                    b.ToTable("MediaItems", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.MediaShare", b =>
@@ -196,7 +196,7 @@ namespace TuneVault.Infrastructure.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("MediaShares");
+                    b.ToTable("MediaShares", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.Notification", b =>
@@ -229,7 +229,7 @@ namespace TuneVault.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.PlayHistory", b =>
@@ -253,7 +253,7 @@ namespace TuneVault.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PlayHistories");
+                    b.ToTable("PlayHistories", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.Playlist", b =>
@@ -282,7 +282,7 @@ namespace TuneVault.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Playlists");
+                    b.ToTable("Playlists", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.PlaylistTrack", b =>
@@ -300,7 +300,7 @@ namespace TuneVault.Infrastructure.Migrations
 
                     b.HasIndex("MediaItemId");
 
-                    b.ToTable("PlaylistTracks");
+                    b.ToTable("PlaylistTracks", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.User", b =>
@@ -331,7 +331,7 @@ namespace TuneVault.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.UserProfile", b =>
@@ -361,7 +361,7 @@ namespace TuneVault.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[UserId1] IS NOT NULL");
 
-                    b.ToTable("UserProfiles");
+                    b.ToTable("UserProfiles", (string)null);
                 });
 
             modelBuilder.Entity("TuneVault.Domain.Entities.Favorite", b =>
