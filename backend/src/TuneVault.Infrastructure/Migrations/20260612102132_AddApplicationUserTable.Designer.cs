@@ -12,8 +12,8 @@ using TuneVault.Infrastructure.Persistence;
 namespace TuneVault.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260614090935_AddApplicationUsers")]
-    partial class AddApplicationUsers
+    [Migration("20260612102132_AddApplicationUserTable")]
+    partial class AddApplicationUserTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

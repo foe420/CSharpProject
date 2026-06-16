@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TuneVault.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddApplicationUsers : Migration
+    public partial class AddApplicationUserTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
