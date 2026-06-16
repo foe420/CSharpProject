@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import apiClient from '../services/apiClient';
+import apiClient from '../../services/apiClient';
 
 interface Props {
   isOpen: boolean;

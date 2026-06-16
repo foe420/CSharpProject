@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { usePlayerStore, PlayerTrack } from '../stores/usePlayerStore';
-import apiClient from '../services/apiClient';
-import { MediaItemSummaryDto } from '../types';
+import { usePlayerStore } from '../../stores/usePlayerStore';
+import type { PlayerTrack } from '../../stores/usePlayerStore';
+import apiClient from '../../services/apiClient';
+import type { MediaItemSummaryDto } from '../../types';
 
 interface Props {
   item: MediaItemSummaryDto;

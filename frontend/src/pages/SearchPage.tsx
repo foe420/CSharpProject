@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import apiClient from '../services/apiClient';
-import MediaItemCard from '../components/MediaItemCard';
-import { MediaItemSummaryDto } from '../types';
+import MediaItemCard from '../components/layout/MediaItemCard';
+import type { MediaItemSummaryDto } from '../types';
 
 export function SearchPage() {
   const [searchTerm, setSearchTerm] = useState('');
