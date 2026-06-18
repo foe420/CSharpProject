@@ -12,6 +12,10 @@ using TuneVault.Domain.Enums;
 using TuneVault.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using TuneVault.Application.Features.Favorites.ToggleFavorite;
+using TuneVault.Application.Features.Favorites.GetFavorites;
+using TuneVault.Application.Features.PlayHistory.RecordPlayHistory;
+using TuneVault.Application.Features.PlayHistory.GetRecentHistory;
 
 namespace TuneVault.API.Controllers;
 
@@ -126,6 +130,102 @@ public class MediaController : ControllerBase
     public async Task<ActionResult<IReadOnlyList<MediaItemSummaryDto>>> GetTrending(CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetTrendingMediaQuery(), cancellationToken);
+        return Ok(result);
+    }
+
+    // ========== FAVORITES ==========
+
+    [HttpPost("{id}/favorite")]
+    [Authorize]
+    public async Task<ActionResult<ToggleFavoriteResponseDto>> ToggleFavorite(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+        var userId = Guid.Parse(userIdClaim);
+        
+        var command = new ToggleFavoriteCommand
+        {
+            MediaItemId = id,  
+            UserId = userId
+        };
+        
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("users/me/favorites")]
+    [Authorize]
+    public async Task<ActionResult<PagedFavoriteResult>> GetFavorites(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+        var userId = Guid.Parse(userIdClaim);
+        
+        var query = new GetFavoritesQuery
+        {
+            UserId = userId,
+            Page = page,
+            PageSize = pageSize
+        };
+        
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    // ========== PLAY HISTORY ==========
+
+    [HttpPost("{id}/play")]
+    [Authorize]
+    public async Task<IActionResult> RecordPlay(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+        var userId = Guid.Parse(userIdClaim);
+        
+        var command = new RecordPlayHistoryCommand
+        {
+            MediaItemId = id,
+            UserId = userId
+        };
+        
+        await _mediator.Send(command, cancellationToken);
+        return Ok(new { message = "Play recorded successfully" });
+    }
+
+    [HttpGet("users/me/history")]
+    [Authorize]
+    public async Task<ActionResult<IReadOnlyList<HistoryItemDto>>> GetRecentHistory(
+        CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+        var userId = Guid.Parse(userIdClaim);
+        
+        var query = new GetRecentHistoryQuery
+        {
+            UserId = userId
+        };
+        
+        var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
 }

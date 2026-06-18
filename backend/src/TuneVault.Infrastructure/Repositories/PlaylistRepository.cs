@@ -14,44 +14,31 @@ public class PlaylistRepository : IPlaylistRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Playlist?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
-    {
-        return await _dbContext.Playlists
-            .Include(p => p.Owner)
-                .ThenInclude(o => o!.Profile)
-            .Include(p => p.Tracks)
-                .ThenInclude(t => t.MediaItem)
-            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
-    }
-
     public async Task<Playlist> AddAsync(Playlist playlist, CancellationToken cancellationToken)
     {
-        var user = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == playlist.OwnerId, cancellationToken);
-        
-        if (user == null)
-        {
-            var appUser = await _dbContext.ApplicationUsers
-                .FirstOrDefaultAsync(u => u.Id == playlist.OwnerId, cancellationToken);
-            
-            if (appUser != null)
-            {
-                user = new User
-                {
-                    Id = appUser.Id,
-                    UserName = appUser.UserName ?? appUser.Email,
-                    Email = appUser.Email,
-                    PasswordHash = appUser.PasswordHash,
-                    CreatedAtUtc = appUser.CreatedAtUtc
-                };
-                _dbContext.Users.Add(user);
-                await _dbContext.SaveChangesAsync(cancellationToken);
-            }
-        }
-
         _dbContext.Playlists.Add(playlist);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return playlist;
+    }
+
+    public async Task<Playlist?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Playlists
+            .Include(x => x.Owner)
+            .Include(x => x.Tracks)
+                .ThenInclude(t => t.MediaItem)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
+    // ✅ THÊM METHOD NÀY
+    public async Task<IReadOnlyList<Playlist>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Playlists
+            .Where(x => x.OwnerId == userId)
+            .Include(x => x.Owner)
+            .Include(x => x.Tracks)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task UpdateAsync(Playlist playlist, CancellationToken cancellationToken)
@@ -60,9 +47,13 @@ public class PlaylistRepository : IPlaylistRepository
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Playlist playlist, CancellationToken cancellationToken)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        _dbContext.Playlists.Remove(playlist);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        var playlist = await _dbContext.Playlists.FindAsync(id, cancellationToken);
+        if (playlist != null)
+        {
+            _dbContext.Playlists.Remove(playlist);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

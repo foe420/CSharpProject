@@ -36,6 +36,10 @@ public static class DependencyInjection
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
+        services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+        services.AddScoped<IPlayHistoryRepository, PlayHistoryRepository>();
+        services.AddScoped<IShareRepository, ShareRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

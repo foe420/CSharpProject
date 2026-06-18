@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usePlayerStore } from '../stores/usePlayerStore';
 
 export function VideoPlayerPage() {
+  const navigate = useNavigate();
   const { currentTrack } = usePlayerStore();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -9,6 +11,7 @@ export function VideoPlayerPage() {
   useEffect(() => {
     if (videoRef.current && currentTrack?.src) {
       videoRef.current.src = currentTrack.src;
+      videoRef.current.load();
       videoRef.current.play().catch(console.error);
     }
   }, [currentTrack?.src]);
@@ -37,10 +40,18 @@ export function VideoPlayerPage() {
           className="w-full rounded-lg"
           onEnded={toggleFullscreen}
           autoPlay
+          playsInline
         >
           <source src={currentTrack.src} type="video/mp4" />
+          <source src={currentTrack.src} type="video/webm" />
           Trình duyệt của bạn không hỗ trợ video tag.
         </video>
+        <button
+          onClick={() => navigate('/')}
+          className="absolute top-4 left-4 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition"
+        >
+          ✕ Đóng
+        </button>
         <button
           onClick={toggleFullscreen}
           className="absolute top-4 right-4 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition"

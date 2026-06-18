@@ -37,7 +37,7 @@ public class MediaRepository : IMediaRepository
                 // Tạo user mới trong bảng Users với CÙNG Id
                 user = new User
                 {
-                    Id = appUser.Id,  // Dùng cùng Id
+                    Id = appUser.Id,
                     UserName = appUser.UserName ?? appUser.Email,
                     Email = appUser.Email,
                     PasswordHash = appUser.PasswordHash,
@@ -112,12 +112,12 @@ public class MediaRepository : IMediaRepository
             .AsNoTracking()
             .Select(mi => new
             {
-                MediaItem = mi, // 1. Count play history records in the last 7 days:
+                MediaItem = mi,
                 PlayCount = mi.PlayHistoryEntries.Count(ph => ph.PlayedAt >= sevenDaysAgo)
             })
-            .OrderByDescending(x => x.PlayCount) // 2. Sort by play count (highest first)
-            .ThenByDescending(x => x.MediaItem.CreatedAt) // 3. Then by created date (newest first)
-            .Take(count) // 4. Take the top N results
+            .OrderByDescending(x => x.PlayCount)
+            .ThenByDescending(x => x.MediaItem.CreatedAt)
+            .Take(count)
             .Select(x => x.MediaItem)
             .ToListAsync(cancellationToken);
     }

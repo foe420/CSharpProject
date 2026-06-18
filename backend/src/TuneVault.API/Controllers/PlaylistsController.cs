@@ -7,6 +7,7 @@ using TuneVault.Application.Features.Playlists.Commands.AddTrackToPlaylist;
 using TuneVault.Application.Features.Playlists.Commands.DeletePlaylist;
 using TuneVault.Application.Features.Playlists.Queries.GetPlaylistById;
 using TuneVault.Application.Features.Playlists.Dtos;
+using TuneVault.Application.Features.Playlists.Queries.GetUserPlaylists;
 
 namespace TuneVault.API.Controllers;
 
@@ -82,6 +83,22 @@ public class PlaylistsController : ControllerBase
         Guid? userId = string.IsNullOrEmpty(userIdStr) ? null : Guid.Parse(userIdStr);
 
         var result = await _mediator.Send(new GetPlaylistByIdQuery(id, userId), cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("me")]
+    public async Task<ActionResult<IReadOnlyList<PlaylistDto>>> GetMyPlaylists(
+        CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+        var userId = Guid.Parse(userIdClaim);
+
+        var query = new GetUserPlaylistsQuery { UserId = userId };
+        var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
     }
 }

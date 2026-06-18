@@ -26,7 +26,7 @@ public class DeletePlaylistCommandHandler : IRequestHandler<DeletePlaylistComman
             throw new ForbiddenException("You do not have permission to delete this playlist.");
         }
 
-        await _playlistRepository.DeleteAsync(playlist, cancellationToken);
+        await _playlistRepository.DeleteAsync(request.PlaylistId, cancellationToken);
 
         return Unit.Value;
     }

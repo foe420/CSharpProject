@@ -16,11 +16,11 @@ export type LoginRequest = {
 };
 
 export function login(request: LoginRequest) {
-  return apiClient.post<AuthResponse>('/auth/login', request);
+  return apiClient.post<AuthResponse>('/auth/login', request);  
 }
 
 export function register(request: RegisterRequest) {
-  return apiClient.post<AuthResponse>('/auth/register', request);
+  return apiClient.post<AuthResponse>('/auth/register', request); 
 }
 
 export function logout() {

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/apiClient';
 import MediaItemCard from '../components/layout/MediaItemCard';
-import type { MediaItemSummaryDto } from '../types';
 
 interface Playlist {
   id: string;
@@ -14,7 +13,8 @@ interface Playlist {
 export function LibraryPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'playlists' | 'favorites' | 'history'>('playlists');
-  const [items, setItems] = useState<MediaItemSummaryDto[]>([]);
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
@@ -28,14 +28,27 @@ export function LibraryPage() {
     setLoading(true);
     try {
       if (activeTab === 'playlists') {
-        const res = await apiClient.get('/users/me/playlists');
+        const res = await apiClient.get('/playlists/me');
         setPlaylists(res.data || []);
       } else if (activeTab === 'favorites') {
-        const res = await apiClient.get('/users/me/favorites');
-        setItems(res.data.items || res.data || []);
+        const res = await apiClient.get('/Media/users/me/favorites?page=1&pageSize=50');
+        setFavorites(res.data.items || []);
       } else if (activeTab === 'history') {
-        const res = await apiClient.get('/users/me/history');
-        setItems(res.data || []);
+        const [historyRes, favRes] = await Promise.all([
+          apiClient.get('/Media/users/me/history'),
+          apiClient.get('/Media/users/me/favorites?page=1&pageSize=999')
+        ]);
+        
+        // Tạo Set các ID đã favorite
+        const favIds = new Set((favRes.data.items || []).map((f: any) => f.mediaItemId));
+        
+        // Thêm isFavorited vào từng item
+        const historyWithFav = (historyRes.data || []).map((item: any) => ({
+          ...item,
+          isFavorited: favIds.has(item.mediaItemId || item.id)
+        }));
+        
+        setHistory(historyWithFav);
       }
     } catch (error) {
       console.error('Lỗi tải thư viện:', error);
@@ -54,7 +67,7 @@ export function LibraryPage() {
         title: newPlaylistName,
         isPublic: false
       });
-      setPlaylists([...playlists, res.data]);
+      setPlaylists([res.data, ...playlists]);
       setNewPlaylistName('');
     } catch (error) {
       console.error('Lỗi tạo playlist:', error);
@@ -64,9 +77,36 @@ export function LibraryPage() {
     }
   };
 
+  const renderMediaItems = (items: any[], type: 'favorites' | 'history') => {
+  if (items.length === 0) {
+    return (
+      <div className="col-span-full text-center text-zinc-500 py-12">
+        {type === 'favorites' ? '💔 Chưa có bài hát yêu thích nào' : '🎵 Chưa có lịch sử nghe nào'}
+      </div>
+    );
+  }
+
+  return items.map((item) => {
+    const isFavorited = type === 'favorites' ? true : (item.isFavorited || false);  // ← QUAN TRỌNG
+    
+    const mediaItem = {
+      id: item.mediaItemId || item.id,
+      title: item.title || 'Untitled',
+      artist: item.artist || 'Unknown Artist',
+      genre: item.genre || null,
+      fileType: item.fileType === 2 ? 'Video' : 'Audio',
+      duration: item.duration || 0,
+      isFavorited: isFavorited,  // ← QUAN TRỌNG
+      createdAt: item.favoritedAt || item.playedAt || new Date().toISOString()
+    };
+    return <MediaItemCard key={mediaItem.id} item={mediaItem} />;
+  });
+};
+
   return (
     <div className="space-y-6 text-white">
       <h1 className="text-3xl font-bold">Thư viện của bạn</h1>
+
       <div className="flex gap-4 border-b border-zinc-800 pb-2">
         {[
           { id: 'playlists', label: '🎵 Playlist' },
@@ -151,11 +191,9 @@ export function LibraryPage() {
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {items.length > 0 ? (
-            items.map((item) => <MediaItemCard key={item.id} item={item} />)
-          ) : (
-            <p className="col-span-full text-center text-zinc-500">Chưa có dữ liệu.</p>
-          )}
+          {activeTab === 'favorites' 
+            ? renderMediaItems(favorites, 'favorites')
+            : renderMediaItems(history, 'history')}
         </div>
       )}
     </div>
