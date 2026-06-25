@@ -28,17 +28,31 @@ public class ShareMediaHandler : IRequestHandler<ShareMediaCommand, ShareRespons
 
     public async Task<ShareResponseDto> Handle(ShareMediaCommand request, CancellationToken cancellationToken)
     {
-        // Check if receiver exists
-        var receiver = await _userManager.FindByIdAsync(request.ReceiverId.ToString());
+        // Resolve receiver user
+        ApplicationUser? receiver = null;
+        if (request.ReceiverId != Guid.Empty)
+        {
+            receiver = await _userManager.FindByIdAsync(request.ReceiverId.ToString());
+        }
+        else if (!string.IsNullOrWhiteSpace(request.ReceiverEmail))
+        {
+            receiver = await _userManager.FindByEmailAsync(request.ReceiverEmail.Trim());
+        }
+
         if (receiver == null)
         {
-            throw new NotFoundException($"Receiver user with ID {request.ReceiverId} was not found.");
+            throw new NotFoundException("Receiver user was not found.");
+        }
+
+        if (request.SenderId == receiver.Id)
+        {
+            throw new InvalidOperationException("Cannot share with yourself.");
         }
 
         // Check if share already exists (same sender+receiver+mediaId/playlistId) - idempotent
         var existingShare = await _mediaShareRepository.GetExistingShareAsync(
             request.SenderId,
-            request.ReceiverId,
+            receiver.Id,
             request.MediaItemId,
             request.PlaylistId,
             cancellationToken);
@@ -53,7 +67,7 @@ public class ShareMediaHandler : IRequestHandler<ShareMediaCommand, ShareRespons
         {
             Id = Guid.NewGuid(),
             SenderId = request.SenderId,
-            ReceiverId = request.ReceiverId,
+            ReceiverId = receiver.Id,
             MediaItemId = request.MediaItemId,
             PlaylistId = request.PlaylistId,
             SharedAt = DateTime.UtcNow
@@ -70,7 +84,7 @@ public class ShareMediaHandler : IRequestHandler<ShareMediaCommand, ShareRespons
         // Publish MediaSharedEvent via MediatR IPublisher
         var mediaSharedEvent = new MediaSharedEvent(
             request.SenderId,
-            request.ReceiverId,
+            receiver.Id,
             request.MediaItemId,
             request.PlaylistId,
             senderName ?? "Someone"

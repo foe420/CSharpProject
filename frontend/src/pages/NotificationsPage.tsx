@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import apiClient from '../services/apiClient';
+import { useNotificationStore } from '../stores/useNotificationStore';
 
 interface Notification {
   id: string;
@@ -12,7 +13,7 @@ interface Notification {
 export function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const { unreadCount, setUnreadCount, decrementUnreadCount, clearUnreadCount } = useNotificationStore();
 
   useEffect(() => {
     fetchNotifications();
@@ -39,7 +40,7 @@ export function NotificationsPage() {
           n.id === id ? { ...n, isRead: true } : n
         )
       );
-      setUnreadCount(Math.max(0, unreadCount - 1));
+      decrementUnreadCount();
     } catch (error) {
       console.error('Mark as read error:', error);
     }
@@ -49,7 +50,7 @@ export function NotificationsPage() {
     try {
       await apiClient.put('/notifications/read-all');
       setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
-      setUnreadCount(0);
+      clearUnreadCount();
     } catch (error) {
       console.error('Mark all as read error:', error);
     }

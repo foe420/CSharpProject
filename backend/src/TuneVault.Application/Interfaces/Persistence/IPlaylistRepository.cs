@@ -8,4 +8,5 @@ public interface IPlaylistRepository
     Task<Playlist> AddAsync(Playlist playlist, CancellationToken cancellationToken);
     Task UpdateAsync(Playlist playlist, CancellationToken cancellationToken);
     Task DeleteAsync(Playlist playlist, CancellationToken cancellationToken);
+    Task<List<Playlist>> GetByOwnerIdAsync(Guid ownerId, CancellationToken cancellationToken);
 }

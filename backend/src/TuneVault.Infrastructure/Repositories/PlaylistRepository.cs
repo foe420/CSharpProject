@@ -65,4 +65,13 @@ public class PlaylistRepository : IPlaylistRepository
         _dbContext.Playlists.Remove(playlist);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<List<Playlist>> GetByOwnerIdAsync(Guid ownerId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Playlists
+            .Include(p => p.Owner)
+            .Include(p => p.Tracks)
+            .Where(p => p.OwnerId == ownerId)
+            .ToListAsync(cancellationToken);
+    }
 }
