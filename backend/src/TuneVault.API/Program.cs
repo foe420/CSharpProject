@@ -5,7 +5,7 @@ using TuneVault.Application.DependencyInjection;
 using TuneVault.Infrastructure.Auth;
 using TuneVault.Infrastructure.DependencyInjection;
 using TuneVault.Infrastructure.Persistence;
-using TuneVault.API.Hubs;
+using TuneVault.Infrastructure.Hubs;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 
