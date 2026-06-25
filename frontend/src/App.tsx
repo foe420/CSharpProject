@@ -9,6 +9,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { ShareInboxPage } from './pages/ShareInboxPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { PlaylistDetailPage } from './pages/PlaylistDetailPage';
+import { ProtectedRoute } from './components/layout/ProtectedRoute';
 
 function App() {
   return (
@@ -19,7 +20,14 @@ function App() {
           <Route path="home" element={<HomePage />} />
           <Route path="search" element={<SearchPage />} />
           <Route path="library" element={<LibraryPage />} />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="share-inbox" element={<ShareInboxPage />} />
           <Route path="notifications" element={<NotificationsPage />} />
           <Route path="playlist/:id" element={<PlaylistDetailPage />} />

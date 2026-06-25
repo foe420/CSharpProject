@@ -25,7 +25,7 @@ export function NotificationsPage() {
       setNotifications(res.data.items || res.data || []);
       setUnreadCount(res.data.unreadCount || 0);
     } catch (error) {
-      console.error('Lỗi tải thông báo:', error);
+      console.error('Notification load error:', error);
     } finally {
       setLoading(false);
     }
@@ -41,7 +41,7 @@ export function NotificationsPage() {
       );
       setUnreadCount(Math.max(0, unreadCount - 1));
     } catch (error) {
-      console.error('Lỗi đánh dấu đã đọc:', error);
+      console.error('Mark as read error:', error);
     }
   };
 
@@ -51,7 +51,7 @@ export function NotificationsPage() {
       setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
       setUnreadCount(0);
     } catch (error) {
-      console.error('Lỗi đánh dấu tất cả đã đọc:', error);
+      console.error('Mark all as read error:', error);
     }
   };
 
@@ -86,32 +86,32 @@ export function NotificationsPage() {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return 'Vừa xong';
-    if (diffMins < 60) return `${diffMins} phút trước`;
-    if (diffHours < 24) return `${diffHours} giờ trước`;
-    if (diffDays < 7) return `${diffDays} ngày trước`;
-    return date.toLocaleDateString('vi-VN');
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minutes ago`;
+    if (diffHours < 24) return `${diffHours} hours ago`;
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return date.toLocaleDateString();
   };
 
   return (
     <div className="space-y-6 text-white">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Thông báo</h1>
+        <h1 className="text-3xl font-bold">Notifications</h1>
         {unreadCount > 0 && (
           <button
             onClick={handleMarkAllAsRead}
             className="rounded-full bg-spotify-green px-4 py-2 text-sm font-semibold text-black hover:bg-green-500 transition"
           >
-            Đánh dấu tất cả đã đọc ({unreadCount})
+            Mark all as read ({unreadCount})
           </button>
         )}
       </div>
 
       {loading ? (
-        <p className="text-zinc-400">Đang tải thông báo...</p>
+        <p className="text-zinc-400">Loading notifications...</p>
       ) : notifications.length === 0 ? (
         <div className="rounded-2xl border border-zinc-800 bg-[#131313] p-8 text-center">
-          <p className="text-zinc-500">Không có thông báo nào</p>
+          <p className="text-zinc-500">No notifications</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -133,7 +133,7 @@ export function NotificationsPage() {
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <p className="font-semibold text-white">
-                          {payload.message || `Thông báo ${notif.type}`}
+                          {payload.message || `Notification ${notif.type}`}
                         </p>
                         {payload.details && (
                           <p className="text-sm text-zinc-400 mt-1">{payload.details}</p>

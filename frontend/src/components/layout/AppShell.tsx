@@ -6,12 +6,12 @@ import { UploadModal } from './UploadModal';
 import { VideoPlayerPage } from '../../pages/VideoPlayerPage';
 
 const navItems = [
-  { label: '🏠 Trang chủ', path: '/home' },
-  { label: '🔍 Tìm kiếm', path: '/search' },
-  { label: '📚 Thư viện', path: '/library' },
-  { label: '🔔 Thông báo', path: '/notifications' },
-  { label: '💬 Hộp thư chia sẻ', path: '/share-inbox' },
-  { label: '👤 Hồ sơ', path: '/profile' }
+  { label: '🏠 Home', path: '/home' },
+  { label: '🔍 Search', path: '/search' },
+  { label: '📚 Library', path: '/library' },
+  { label: '🔔 Notifications', path: '/notifications' },
+  { label: '💬 Share Inbox', path: '/share-inbox' },
+  { label: '👤 Profile', path: '/profile' }
 ];
 
 export function AppShell() {
@@ -24,12 +24,12 @@ export function AppShell() {
       <div className="grid grid-cols-1 gap-4 px-6 py-5 xl:grid-cols-[18rem_1fr]">
         <aside className="rounded-3xl border border-zinc-800 bg-[#111111] p-5 shadow-black/20">
           <div className="mb-6 flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold">Thư viện</h2>
+            <h2 className="text-lg font-semibold">Library</h2>
             <button 
               onClick={() => setIsUploadOpen(true)}
               className="rounded-full border border-zinc-700 bg-zinc-950 px-3 py-2 text-xs text-zinc-300 transition hover:border-spotify-green hover:text-white"
             >
-              ⬆️ Tải lên
+              ⬆️ Upload
             </button>
           </div>
           <nav className="space-y-2 text-sm text-zinc-300">

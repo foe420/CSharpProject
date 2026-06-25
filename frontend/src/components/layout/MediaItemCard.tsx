@@ -37,7 +37,7 @@ export default function MediaItemCard({ item }: Props) {
       const res = await apiClient.post(`/media/${item.id}/favorite`);
       setIsFav(res.data.isFavorited);
     } catch (error) {
-      console.error("Lỗi khi thêm yêu thích", error);
+      console.error("Favorite toggle error", error);
     }
   };
 

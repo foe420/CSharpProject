@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../services/apiClient';
 import { usePlayerStore, type PlayerTrack } from '../stores/usePlayerStore';
-import MediaItemCard from '../components/layout/MediaItemCard';
 
 interface PlaylistDetail {
   id: string;
@@ -41,7 +40,7 @@ export function PlaylistDetailPage() {
       setPlaylist(res.data);
       setError('');
     } catch (err) {
-      setError('Không thể tải playlist');
+      setError('Unable to load playlist');
       console.error(err);
     } finally {
       setLoading(false);
@@ -71,7 +70,7 @@ export function PlaylistDetailPage() {
           : null
       );
     } catch (err) {
-      console.error('Lỗi xóa track:', err);
+      console.error('Track delete error:', err);
     }
   };
 
@@ -82,12 +81,12 @@ export function PlaylistDetailPage() {
         receiverEmail: shareReceiverEmail,
         playlistId: id
       });
-      alert('Chia sẻ thành công!');
+      alert('Share successful!');
       setShareReceiverEmail('');
       setIsSharing(false);
     } catch (err) {
-      console.error('Lỗi chia sẻ:', err);
-      alert('Chia sẻ thất bại');
+      console.error('Share error:', err);
+      alert('Share failed');
     }
   };
 
@@ -100,7 +99,7 @@ export function PlaylistDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen text-white">
-        <p>Đang tải...</p>
+        <p>Loading...</p>
       </div>
     );
   }
@@ -114,7 +113,7 @@ export function PlaylistDetailPage() {
             onClick={() => navigate('/library')}
             className="rounded-full bg-spotify-green px-6 py-2 font-semibold text-black hover:bg-green-500 transition"
           >
-            Quay lại thư viện
+            Back to library
           </button>
         </div>
       </div>
@@ -133,10 +132,10 @@ export function PlaylistDetailPage() {
             <p className="text-sm uppercase tracking-widest text-spotify-green">Playlist</p>
             <h1 className="text-5xl font-bold mb-2">{playlist.title}</h1>
             <p className="text-zinc-400 mb-4">
-              Bởi <span className="text-white font-semibold">{playlist.ownerName}</span>
+              By <span className="text-white font-semibold">{playlist.ownerName}</span>
             </p>
             <p className="text-sm text-zinc-400">
-              {playlist.tracks.length} bài • {playlist.isPublic ? 'Công khai' : 'Riêng tư'}
+              {playlist.tracks.length} tracks • {playlist.isPublic ? 'Public' : 'Private'}
             </p>
             <div className="flex gap-3 mt-6">
               <button
@@ -144,13 +143,13 @@ export function PlaylistDetailPage() {
                 className="rounded-full bg-spotify-green px-8 py-3 font-semibold text-black hover:bg-green-500 transition disabled:opacity-50"
                 disabled={playlist.tracks.length === 0}
               >
-                ▶ Phát
+                ▶ Play
               </button>
               <button
                 onClick={() => setIsSharing(!isSharing)}
                 className="rounded-full border border-zinc-700 px-8 py-3 font-semibold hover:border-white transition"
               >
-                📤 Chia sẻ
+                📤 Share
               </button>
             </div>
           </div>
@@ -160,11 +159,11 @@ export function PlaylistDetailPage() {
       {/* Share form */}
       {isSharing && (
         <div className="rounded-2xl border border-zinc-800 bg-[#131313] p-6">
-          <h3 className="font-semibold mb-4">Chia sẻ playlist với</h3>
+          <h3 className="font-semibold mb-4">Share playlist with</h3>
           <div className="flex gap-3">
             <input
               type="email"
-              placeholder="Email người nhận..."
+              placeholder="Recipient email..."
               value={shareReceiverEmail}
               onChange={(e) => setShareReceiverEmail(e.target.value)}
               className="flex-1 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-2 text-white outline-none focus:border-spotify-green"
@@ -174,7 +173,7 @@ export function PlaylistDetailPage() {
               disabled={!shareReceiverEmail.trim()}
               className="rounded-full bg-spotify-green px-6 py-2 font-semibold text-black hover:bg-green-500 transition disabled:opacity-50"
             >
-              Gửi
+              Send
             </button>
           </div>
         </div>
@@ -182,10 +181,10 @@ export function PlaylistDetailPage() {
 
       {/* Tracks list */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">Các bài hát</h2>
+        <h2 className="text-2xl font-bold mb-4">Tracks</h2>
         {playlist.tracks.length === 0 ? (
           <div className="rounded-2xl border border-zinc-800 bg-[#131313] p-8 text-center text-zinc-500">
-            Playlist này chưa có bài hát nào
+            No tracks in this playlist
           </div>
         ) : (
           <div className="space-y-2">

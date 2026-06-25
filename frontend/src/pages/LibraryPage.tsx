@@ -38,7 +38,7 @@ export function LibraryPage() {
         setItems(res.data || []);
       }
     } catch (error) {
-      console.error('Lỗi tải thư viện:', error);
+      console.error('Library load error:', error);
     } finally {
       setLoading(false);
     }
@@ -57,8 +57,8 @@ export function LibraryPage() {
       setPlaylists([...playlists, res.data]);
       setNewPlaylistName('');
     } catch (error) {
-      console.error('Lỗi tạo playlist:', error);
-      alert('Tạo playlist thất bại');
+      console.error('Create playlist error:', error);
+      alert('Playlist creation failed');
     } finally {
       setCreatingPlaylist(false);
     }
@@ -66,12 +66,12 @@ export function LibraryPage() {
 
   return (
     <div className="space-y-6 text-white">
-      <h1 className="text-3xl font-bold">Thư viện của bạn</h1>
+      <h1 className="text-3xl font-bold">Your library</h1>
       <div className="flex gap-4 border-b border-zinc-800 pb-2">
         {[
           { id: 'playlists', label: '🎵 Playlist' },
-          { id: 'favorites', label: '❤️ Yêu thích' },
-          { id: 'history', label: '⏱️ Nghe gần đây' }
+          { id: 'favorites', label: '❤️ Favorites' },
+          { id: 'history', label: '⏱️ Recent' }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -88,15 +88,15 @@ export function LibraryPage() {
       </div>
 
       {loading ? (
-        <p className="text-zinc-400">Đang tải...</p>
+        <p className="text-zinc-400">Loading...</p>
       ) : activeTab === 'playlists' ? (
         <div className="space-y-6">
           <form onSubmit={handleCreatePlaylist} className="rounded-2xl border border-zinc-800 bg-[#131313] p-6">
-            <h3 className="text-lg font-semibold mb-3">Tạo playlist mới</h3>
+            <h3 className="text-lg font-semibold mb-3">Create new playlist</h3>
             <div className="flex gap-3">
               <input
                 type="text"
-                placeholder="Tên playlist..."
+                placeholder="Playlist name..."
                 value={newPlaylistName}
                 onChange={(e) => setNewPlaylistName(e.target.value)}
                 maxLength={100}
@@ -107,14 +107,14 @@ export function LibraryPage() {
                 disabled={creatingPlaylist || !newPlaylistName.trim()}
                 className="rounded-full bg-spotify-green px-6 py-2 font-semibold text-black hover:bg-green-500 transition disabled:opacity-50"
               >
-                Tạo
+                Create
               </button>
             </div>
           </form>
 
           {playlists.length === 0 ? (
             <div className="rounded-2xl border border-zinc-800 bg-[#131313] p-8 text-center text-zinc-500">
-              Chưa có playlist nào. Hãy tạo một cái mới!
+              No playlists found. Create one now!
             </div>
           ) : (
             <div className="grid gap-3">
@@ -132,7 +132,7 @@ export function LibraryPage() {
                       {playlist.title}
                     </p>
                     <p className="text-sm text-zinc-400">
-                      {playlist.trackCount} bài • {playlist.ownerName}
+                      {playlist.trackCount} tracks • {playlist.ownerName}
                     </p>
                   </div>
                   <button
@@ -142,7 +142,7 @@ export function LibraryPage() {
                     }}
                     className="rounded-full bg-spotify-green px-4 py-2 text-sm font-semibold text-black hover:bg-green-500 transition"
                   >
-                    ▶ Phát
+                    ▶ Play
                   </button>
                 </div>
               ))}
@@ -154,7 +154,7 @@ export function LibraryPage() {
           {items.length > 0 ? (
             items.map((item) => <MediaItemCard key={item.id} item={item} />)
           ) : (
-            <p className="col-span-full text-center text-zinc-500">Chưa có dữ liệu.</p>
+            <p className="col-span-full text-center text-zinc-500">No data available.</p>
           )}
         </div>
       )}

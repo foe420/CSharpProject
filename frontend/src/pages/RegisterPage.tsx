@@ -7,12 +7,25 @@ export function RegisterPage() {
   const [email, setEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
+
+    if (!emailPattern.test(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match. Please check and try again.');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -30,7 +43,15 @@ export function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center bg-black px-4 py-10 text-white">
       <div className="w-full max-w-md space-y-6 rounded-3xl border border-zinc-800 bg-zinc-950 p-8 shadow-xl shadow-black/40">
         <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">Create your TuneVault</h1>
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-3xl font-bold">Create your TuneVault</h1>
+            <Link
+              to="/home"
+              className="text-sm text-spotify-green transition hover:text-white"
+            >
+              ← Back to home
+            </Link>
+          </div>
           <p className="text-sm text-zinc-400">Register a new account and start listening.</p>
         </div>
 
@@ -52,6 +73,8 @@ export function RegisterPage() {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              pattern={"^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"}
+              title="Enter a valid email address"
               className="mt-2 w-full rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition focus:border-spotify-green"
               required
             />
@@ -63,6 +86,17 @@ export function RegisterPage() {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              className="mt-2 w-full rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition focus:border-spotify-green"
+              required
+            />
+          </label>
+
+          <label className="block text-sm text-zinc-300">
+            Confirm password
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
               className="mt-2 w-full rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition focus:border-spotify-green"
               required
             />

@@ -22,6 +22,7 @@ export type PlayerState = {
   previous: () => void;
   setVolume: (value: number) => void;
   setPosition: (value: number) => void;
+  stop: () => void;
   addToQueue: (track: PlayerTrack) => void;
 };
 
@@ -40,6 +41,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     })),
   pause: () => set({ isPlaying: false }),
   resume: () => set({ isPlaying: true }),
+  stop: () => set({ currentTrack: null, isPlaying: false, position: 0 }),
   next: () => {
     const { queue, currentTrack } = get();
     if (!queue.length) {
