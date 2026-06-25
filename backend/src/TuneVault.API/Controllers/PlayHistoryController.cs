@@ -21,12 +21,11 @@ public class PlayHistoryController : ControllerBase
 
     // POST /api/media/{id}/play
     [HttpPost("media/{id:guid}/play")]
-    public IActionResult RecordPlay(Guid id)
+    public async Task<IActionResult> RecordPlay(Guid id, CancellationToken cancellationToken)
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        // Fire-and-forget: không await, không block response
-        _ = _mediator.Send(new RecordPlayHistoryCommand(userId, id), CancellationToken.None);
+        await _mediator.Send(new RecordPlayHistoryCommand(userId, id), cancellationToken);
 
         return Ok();
     }

@@ -39,6 +39,11 @@ public static class DependencyInjection
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
 
+        services.AddScoped<IMediaShareRepository, MediaShareRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
+        services.AddScoped<INotificationPushService, SignalRNotificationPushService>();
+        services.AddScoped<IFollowRepository, FollowRepository>();
+
         return services;
     }
 }
