@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/apiClient';
 import { usePlayerStore, type PlayerTrack } from '../stores/usePlayerStore';
 
@@ -7,10 +8,13 @@ interface ShareItem {
   senderName: string;
   receiverName: string;
   sharedAt: string;
-  mediaItem: { id: string; title: string; artist: string; duration: number; fileType: 'Audio' | 'Video'; };
+  mediaItem?: { id: string; title: string; artist: string; duration: number; fileType: 'Audio' | 'Video'; } | null;
+  playlistId?: string | null;
+  playlistTitle?: string | null;
 }
 
 export function ShareInboxPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'inbox' | 'sent'>('inbox');
   const [shares, setShares] = useState<ShareItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -22,7 +26,7 @@ export function ShareInboxPage() {
       try {
         const endpoint = activeTab === 'inbox' ? '/shares/inbox' : '/shares/sent';
         const res = await apiClient.get(endpoint);
-        setShares(res.data);
+        setShares(res.data.items || []);
       } catch (error) {
         console.error('Share list load error:', error);
       } finally {
@@ -32,7 +36,7 @@ export function ShareInboxPage() {
     fetchShares();
   }, [activeTab]);
 
-  const handlePlay = (item: ShareItem['mediaItem']) => {
+  const handlePlay = (item: NonNullable<ShareItem['mediaItem']>) => {
     const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://localhost:5001/api';
     const trackToPlay: PlayerTrack = {
       id: item.id,
@@ -62,12 +66,15 @@ export function ShareInboxPage() {
             <div key={share.id} className="flex items-center justify-between rounded-xl bg-[#1d1d1d] p-4 transition hover:bg-[#252525]">
               <div>
                 <p className="text-sm text-spotify-green mb-1">{activeTab === 'inbox' ? `From: ${share.senderName}` : `Sent to: ${share.receiverName}`}</p>
-                <p className="font-semibold text-white">{share.mediaItem?.title || 'Playlist'}</p>
-                <p className="text-xs text-zinc-400">{share.mediaItem?.artist}</p>
+                <p className="font-semibold text-white">{share.mediaItem?.title || share.playlistTitle || 'Playlist'}</p>
+                {share.mediaItem && <p className="text-xs text-zinc-400">{share.mediaItem.artist}</p>}
                 <p className="text-xs text-zinc-500 mt-2">{new Date(share.sharedAt).toLocaleString()}</p>
               </div>
               {share.mediaItem && (
                 <button onClick={() => handlePlay(share.mediaItem)} className="rounded-full bg-spotify-green px-4 py-2 text-sm font-semibold text-black transition hover:brightness-110">Play now</button>
+              )}
+              {share.playlistId && (
+                <button onClick={() => navigate(`/playlist/${share.playlistId}`)} className="rounded-full bg-spotify-green px-4 py-2 text-sm font-semibold text-black transition hover:brightness-110">Open playlist</button>
               )}
             </div>
           ))}

@@ -11,14 +11,11 @@ export function SearchPage() {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
-      if (!searchTerm.trim()) {
-        setResults([]);
-        return;
-      }
       setLoading(true);
       try {
         const fileTypeQuery = filter !== 'All' ? `&fileType=${filter}` : '';
-        const res = await apiClient.get(`/media/search?term=${searchTerm}${fileTypeQuery}&page=1&pageSize=20`);
+        const termParam = searchTerm.trim() ? `term=${encodeURIComponent(searchTerm)}` : 'term=';
+        const res = await apiClient.get(`/media/search?${termParam}${fileTypeQuery}&page=1&pageSize=50`);
         setResults(res.data.items || []);
       } catch (error) {
         console.error('Search error:', error);

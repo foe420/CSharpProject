@@ -1,8 +1,21 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { isAuthenticated } from '../../services/authService';
+import { useNotificationStore } from '../../stores/useNotificationStore';
 
 export function TopBar() {
   const userLoggedIn = isAuthenticated();
+  const { unreadCount, fetchUnreadCount, setUnreadCount } = useNotificationStore();
+
+  useEffect(() => {
+    if (userLoggedIn) {
+      fetchUnreadCount();
+      const interval = setInterval(fetchUnreadCount, 30000);
+      return () => clearInterval(interval);
+    } else {
+      setUnreadCount(0);
+    }
+  }, [userLoggedIn, fetchUnreadCount, setUnreadCount]);
 
   return (
     <div className="flex items-center justify-between border-b border-zinc-800 bg-[#0e0e0e] px-6 py-4 text-zinc-100">
@@ -29,9 +42,18 @@ export function TopBar() {
             Login
           </Link>
         )}
-        <button className="rounded-full border border-zinc-800 bg-zinc-950 p-3 text-zinc-200 transition hover:border-spotify-green hover:text-white">
+        <Link
+          to="/notifications"
+          className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-zinc-800 bg-zinc-950 text-zinc-200 transition hover:border-spotify-green hover:text-white"
+          title="Notifications"
+        >
           🔔
-        </button>
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-spotify-green text-[10px] font-bold text-black shadow-lg shadow-black/50">
+              {unreadCount}
+            </span>
+          )}
+        </Link>
       </div>
     </div>
   );
