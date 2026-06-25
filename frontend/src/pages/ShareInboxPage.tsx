@@ -71,7 +71,7 @@ export function ShareInboxPage() {
                 <p className="text-xs text-zinc-500 mt-2">{new Date(share.sharedAt).toLocaleString()}</p>
               </div>
               {share.mediaItem && (
-                <button onClick={() => handlePlay(share.mediaItem)} className="rounded-full bg-spotify-green px-4 py-2 text-sm font-semibold text-black transition hover:brightness-110">Play now</button>
+                <button onClick={() => handlePlay(share.mediaItem!)} className="rounded-full bg-spotify-green px-4 py-2 text-sm font-semibold text-black transition hover:brightness-110">Play now</button>
               )}
               {share.playlistId && (
                 <button onClick={() => navigate(`/playlist/${share.playlistId}`)} className="rounded-full bg-spotify-green px-4 py-2 text-sm font-semibold text-black transition hover:brightness-110">Open playlist</button>
