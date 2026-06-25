@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { type PlayerTrack, usePlayerStore } from '../stores/usePlayerStore';
+import { usePlayerStore } from '../stores/usePlayerStore';
 import apiClient from '../services/apiClient';
 import { isAuthenticated } from '../services/authService';
 
