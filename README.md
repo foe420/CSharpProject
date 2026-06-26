@@ -164,34 +164,37 @@ The API URL defaults to `http://localhost:5237/api`. To change it, modify the `V
 ### 📚 Frameworks & Libraries
 
 #### Backend
-| Library / Framework | Purpose | License |
-|---|---|---|
-| [ASP.NET Core 8](https://docs.microsoft.com/aspnet/core) | Web API framework | MIT |
-| [MediatR](https://github.com/jbogard/MediatR) by Jimmy Bogard | CQRS mediator pattern | Apache 2.0 |
-| [Entity Framework Core](https://github.com/dotnet/efcore) | ORM for SQL Server | MIT |
-| [FluentValidation](https://docs.fluentvalidation.net) | Request validation pipeline | Apache 2.0 |
-| [ASP.NET Core Identity](https://docs.microsoft.com/aspnet/core/security/authentication/identity) | User management & password hashing | MIT |
-| [Microsoft.AspNetCore.SignalR](https://github.com/dotnet/aspnetcore) | Real-time WebSocket hub | MIT |
-| [System.IdentityModel.Tokens.Jwt](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet) | JWT token generation & validation | MIT |
+
+| Library / Framework                                                                                                     | Purpose                            | License    |
+| ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ---------- |
+| [ASP.NET Core 8](https://docs.microsoft.com/aspnet/core)                                                                | Web API framework                  | MIT        |
+| [MediatR](https://github.com/jbogard/MediatR) by Jimmy Bogard                                                           | CQRS mediator pattern              | Apache 2.0 |
+| [Entity Framework Core](https://github.com/dotnet/efcore)                                                               | ORM for SQL Server                 | MIT        |
+| [FluentValidation](https://docs.fluentvalidation.net)                                                                   | Request validation pipeline        | Apache 2.0 |
+| [ASP.NET Core Identity](https://docs.microsoft.com/aspnet/core/security/authentication/identity)                        | User management & password hashing | MIT        |
+| [Microsoft.AspNetCore.SignalR](https://github.com/dotnet/aspnetcore)                                                    | Real-time WebSocket hub            | MIT        |
+| [System.IdentityModel.Tokens.Jwt](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet) | JWT token generation & validation  | MIT        |
 
 #### Frontend
-| Library / Framework | Purpose | License |
-|---|---|---|
-| [React 18](https://react.dev) by Meta | UI component framework | MIT |
-| [Vite](https://vitejs.dev) by Evan You | Build tool & dev server | MIT |
-| [TypeScript](https://www.typescriptlang.org) by Microsoft | Static typing for JavaScript | Apache 2.0 |
-| [Tailwind CSS](https://tailwindcss.com) by Adam Wathan | Utility-first CSS framework | MIT |
-| [Zustand](https://github.com/pmndrs/zustand) by Pmndrs | Lightweight state management | MIT |
-| [Axios](https://axios-http.com) | HTTP client with interceptors | MIT |
-| [React Router v6](https://reactrouter.com) | Client-side routing | MIT |
-| [@microsoft/signalr](https://www.npmjs.com/package/@microsoft/signalr) | SignalR client for frontend | MIT |
+
+| Library / Framework                                                    | Purpose                       | License    |
+| ---------------------------------------------------------------------- | ----------------------------- | ---------- |
+| [React 18](https://react.dev) by Meta                                  | UI component framework        | MIT        |
+| [Vite](https://vitejs.dev) by Evan You                                 | Build tool & dev server       | MIT        |
+| [TypeScript](https://www.typescriptlang.org) by Microsoft              | Static typing for JavaScript  | Apache 2.0 |
+| [Tailwind CSS](https://tailwindcss.com) by Adam Wathan                 | Utility-first CSS framework   | MIT        |
+| [Zustand](https://github.com/pmndrs/zustand) by Pmndrs                 | Lightweight state management  | MIT        |
+| [Axios](https://axios-http.com)                                        | HTTP client with interceptors | MIT        |
+| [React Router v6](https://reactrouter.com)                             | Client-side routing           | MIT        |
+| [@microsoft/signalr](https://www.npmjs.com/package/@microsoft/signalr) | SignalR client for frontend   | MIT        |
 
 #### DevOps & Infrastructure
-| Tool | Purpose |
-|---|---|
-| [Docker](https://www.docker.com) | Container runtime |
-| [Docker Compose](https://docs.docker.com/compose) | Multi-container orchestration |
-| [Microsoft SQL Server](https://www.microsoft.com/sql-server) | Relational database |
+
+| Tool                                                         | Purpose                       |
+| ------------------------------------------------------------ | ----------------------------- |
+| [Docker](https://www.docker.com)                             | Container runtime             |
+| [Docker Compose](https://docs.docker.com/compose)            | Multi-container orchestration |
+| [Microsoft SQL Server](https://www.microsoft.com/sql-server) | Relational database           |
 
 ---
 
@@ -206,31 +209,30 @@ The API URL defaults to `http://localhost:5237/api`. To change it, modify the `V
 
 The assignment report ([`Report/Assignment_report.tex`](Report/Assignment_report.tex)) is written in **LaTeX** using a template provided by **Trường Đại học Sài Gòn (SGU), Khoa Công Nghệ Thông Tin**.
 
-| LaTeX Package | Purpose |
-|---|---|
-| `vntex` | Vietnamese language support |
-| `fancyhdr` | Custom header & footer |
-| `tabularx`, `booktabs` | Formatted tables |
-| `algorithm2e` | Algorithm typesetting |
-| `listings` | Source code highlighting |
-| `hyperref` | Clickable links & references |
-| `tikz`, `mdframed` | Diagrams & highlighted boxes |
-| `lastpage` | Total page count in footer |
+| LaTeX Package          | Purpose                      |
+| ---------------------- | ---------------------------- |
+| `vntex`                | Vietnamese language support  |
+| `fancyhdr`             | Custom header & footer       |
+| `tabularx`, `booktabs` | Formatted tables             |
+| `algorithm2e`          | Algorithm typesetting        |
+| `listings`             | Source code highlighting     |
+| `hyperref`             | Clickable links & references |
+| `tikz`, `mdframed`     | Diagrams & highlighted boxes |
+| `lastpage`             | Total page count in footer   |
 
 ---
 
 ### 👥 Team
 
-| Name | Student ID |
-|---|---|
-| Trần Đăng Nguyên | 3121411152 |
-| Ngô Thành Đạt | 3124410056 |
-| Trịnh Gia Bảo | 3124560011 |
+| Name              | Student ID |
+| ----------------- | ---------- |
+| Trần Đăng Nguyên  | 3121411152 |
+| Ngô Thành Đạt     | 3124410056 |
+| Trịnh Gia Bảo     | 3124560011 |
 | Nguyễn Minh Triệu | 3124410375 |
-| Nguyễn Lê Thắng | 3124410330 |
+| Nguyễn Lê Thắng   | 3124410330 |
 
 **Instructor**: Từ Lãng Phiêu  
-**Course**: Phát triển phần mềm mã nguồn mở — Niên khóa 2023–2024  
 **Institution**: Trường Đại học Sài Gòn (SGU)
 
 ---
