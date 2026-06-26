@@ -5,6 +5,7 @@ using System.Security.Claims;
 using TuneVault.Application.Features.Playlists.Commands.CreatePlaylist;
 using TuneVault.Application.Features.Playlists.Commands.AddTrackToPlaylist;
 using TuneVault.Application.Features.Playlists.Commands.DeletePlaylist;
+using TuneVault.Application.Features.Playlists.Commands.RemoveTrackFromPlaylist;
 using TuneVault.Application.Features.Playlists.Queries.GetPlaylistById;
 using TuneVault.Application.Features.Playlists.Queries.GetUserPlaylists;
 using TuneVault.Application.Features.Playlists.Dtos;
@@ -70,6 +71,22 @@ public class PlaylistsController : ControllerBase
         }
 
         await _mediator.Send(new DeletePlaylistCommand(id, Guid.Parse(userId)), cancellationToken);
+        return NoContent();
+    }
+
+    [HttpDelete("{id}/tracks/{trackId}")]
+    public async Task<IActionResult> RemoveTrack(
+        Guid id,
+        Guid trackId,
+        CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
+        await _mediator.Send(new RemoveTrackFromPlaylistCommand(id, trackId, Guid.Parse(userId)), cancellationToken);
         return NoContent();
     }
 

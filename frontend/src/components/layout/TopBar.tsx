@@ -10,8 +10,6 @@ export function TopBar() {
   useEffect(() => {
     if (userLoggedIn) {
       fetchUnreadCount();
-      const interval = setInterval(fetchUnreadCount, 30000);
-      return () => clearInterval(interval);
     } else {
       setUnreadCount(0);
     }

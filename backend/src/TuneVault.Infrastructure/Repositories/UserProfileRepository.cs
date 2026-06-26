@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using TuneVault.Application.Interfaces.Persistence;
 using TuneVault.Domain.Entities;
 using TuneVault.Infrastructure.Persistence;
@@ -15,5 +16,17 @@ public sealed class UserProfileRepository : IUserProfileRepository
         _dbContext.UserProfiles.Add(userProfile);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return userProfile;
+    }
+
+    public async Task<UserProfile?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.UserProfiles
+            .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+    }
+
+    public async Task UpdateAsync(UserProfile userProfile, CancellationToken cancellationToken = default)
+    {
+        _dbContext.UserProfiles.Update(userProfile);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

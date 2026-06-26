@@ -4,6 +4,9 @@ import { BottomPlayer } from './BottomPlayer';
 import { TopBar } from './TopBar';
 import { UploadModal } from './UploadModal';
 import { VideoPlayerPage } from '../../pages/VideoPlayerPage';
+import { useSignalR } from '../../hooks/useSignalR';
+
+import { RightDetailsPanel } from './RightDetailsPanel';
 
 const navItems = [
   { label: '🏠 Home', path: '/home' },
@@ -16,12 +19,13 @@ const navItems = [
 
 export function AppShell() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  useSignalR();
 
   return (
     <div className="min-h-screen bg-[#090909] text-white pb-[120px]">
       <TopBar />
       <VideoPlayerPage />
-      <div className="grid grid-cols-1 gap-4 px-6 py-5 xl:grid-cols-[18rem_1fr]">
+      <div className="grid grid-cols-1 gap-6 px-6 py-5 lg:grid-cols-[18rem_1fr_20rem] xl:grid-cols-[18rem_1fr_22rem]">
         <aside className="rounded-3xl border border-zinc-800 bg-[#111111] p-5 shadow-black/20">
           <div className="mb-6 flex items-center justify-between gap-3">
             <h2 className="text-lg font-semibold">Library</h2>
@@ -50,6 +54,8 @@ export function AppShell() {
         <main className="space-y-6">
           <Outlet />
         </main>
+
+        <RightDetailsPanel />
       </div>
       <BottomPlayer />
       <UploadModal isOpen={isUploadOpen} onClose={() => setIsUploadOpen(false)} />

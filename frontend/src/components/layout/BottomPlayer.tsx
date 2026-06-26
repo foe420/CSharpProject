@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { usePlayerStore } from '../../stores/usePlayerStore';
 
 const formatTime = (seconds: number) => {
@@ -18,14 +18,15 @@ export function BottomPlayer() {
     isPlaying,
     volume,
     position,
+    duration,
     pause,
     resume,
     next,
     previous,
     setVolume,
-    setPosition
+    setPosition,
+    setDuration
   } = usePlayerStore();
-  const [duration, setDuration] = useState(0);
 
   useEffect(() => {
     const audio = audioRef.current;

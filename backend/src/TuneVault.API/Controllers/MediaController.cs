@@ -13,6 +13,8 @@ using TuneVault.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
+using TuneVault.Application.Features.MediaItems.Queries.GetMediaStream;
+
 namespace TuneVault.API.Controllers;
 
 [ApiController]
@@ -20,12 +22,10 @@ namespace TuneVault.API.Controllers;
 public class MediaController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly AppDbContext _db;
 
-    public MediaController(IMediator mediator, AppDbContext db)
+    public MediaController(IMediator mediator)
     {
         _mediator = mediator;
-        _db = db;
     }
 
     [HttpGet]
@@ -72,39 +72,19 @@ public class MediaController : ControllerBase
 
     [HttpGet("{id}/stream")]
     [AllowAnonymous]
-    public async Task<IActionResult> Stream(Guid id)
+    public async Task<IActionResult> Stream(Guid id, CancellationToken cancellationToken)
     {
-        var media =
-            await _db.MediaItems
-                .FirstOrDefaultAsync(
-                    x => x.Id == id);
-
-        if (media == null)
-            return NotFound();
+        var streamDto = await _mediator.Send(new GetMediaStreamQuery(id), cancellationToken);
 
         var stream =
             new FileStream(
-                media.FilePath,
+                streamDto.FilePath,
                 FileMode.Open,
                 FileAccess.Read);
 
-        var extension =
-            Path.GetExtension(media.FilePath)
-                .ToLowerInvariant();
-
-        string contentType =
-            extension switch
-            {
-                ".mp3" => "audio/mpeg",
-                ".wav" => "audio/wav",
-                ".mp4" => "video/mp4",
-                ".webm" => "video/webm",
-                _ => "application/octet-stream"
-            };
-
         return File(
             stream,
-            contentType,
+            streamDto.ContentType,
             enableRangeProcessing: true);
     }
 
