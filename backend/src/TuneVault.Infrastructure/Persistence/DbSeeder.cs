@@ -159,6 +159,107 @@ public static class DbSeeder
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
+        // Seed 7 more items to satisfy the 10 mixed media items (audio/video) requirement
+        var itemsToSeed = new List<MediaItem>
+        {
+            new MediaItem
+            {
+                Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                Title = "Acoustic Sunrise",
+                Artist = "Acoustic Duo",
+                Genre = "Acoustic",
+                Description = "Beautiful acoustic guitar performance.",
+                FilePath = "https://cdn.example.com/audio/acoustic-sunrise.mp3",
+                Duration = 145,
+                FileType = MediaFileType.Audio,
+                OwnerId = testUserId
+            },
+            new MediaItem
+            {
+                Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
+                Title = "Hip Hop Bounce",
+                Artist = "Beat Maker",
+                Genre = "Hip Hop",
+                Description = "Upbeat hip hop rhythms.",
+                FilePath = "https://cdn.example.com/audio/hip-hop-bounce.mp3",
+                Duration = 168,
+                FileType = MediaFileType.Audio,
+                OwnerId = testUserId
+            },
+            new MediaItem
+            {
+                Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
+                Title = "Cyberpunk Pulse",
+                Artist = "Retro Futuristic",
+                Genre = "Electronic",
+                Description = "Fast-paced electronic cyberpunk rhythms.",
+                FilePath = "https://cdn.example.com/audio/cyberpunk-pulse.mp3",
+                Duration = 190,
+                FileType = MediaFileType.Audio,
+                OwnerId = testUserId
+            },
+            new MediaItem
+            {
+                Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
+                Title = "Jazz Night",
+                Artist = "Smooth Quartet",
+                Genre = "Jazz",
+                Description = "Late night smooth jazz session.",
+                FilePath = "https://cdn.example.com/audio/jazz-night.mp3",
+                Duration = 240,
+                FileType = MediaFileType.Audio,
+                OwnerId = testUserId
+            },
+            new MediaItem
+            {
+                Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                Title = "Vaporwave Sunset",
+                Artist = "Dream Wave",
+                Genre = "Ambient",
+                Description = "Relaxing visual and ambient audio experience.",
+                FilePath = "https://cdn.example.com/video/vaporwave-sunset.mp4",
+                Duration = 300,
+                FileType = MediaFileType.Video,
+                OwnerId = testUserId
+            },
+            new MediaItem
+            {
+                Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                Title = "Nature Walk",
+                Artist = "Scenic Explorer",
+                Genre = "Travel",
+                Description = "Peaceful walking in the forest.",
+                FilePath = "https://cdn.example.com/video/nature-walk.mp4",
+                Duration = 120,
+                FileType = MediaFileType.Video,
+                OwnerId = testUserId
+            },
+            new MediaItem
+            {
+                Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
+                Title = "Neon City Lights",
+                Artist = "Tokyo Rider",
+                Genre = "Sci-Fi",
+                Description = "Cruising through the Tokyo streets at night.",
+                FilePath = "https://cdn.example.com/video/neon-city-lights.mp4",
+                Duration = 180,
+                FileType = MediaFileType.Video,
+                OwnerId = testUserId
+            }
+        };
+
+        foreach (var item in itemsToSeed)
+        {
+            var exists = await dbContext.MediaItems.AnyAsync(m => m.Id == item.Id, cancellationToken);
+            if (!exists)
+            {
+                Console.WriteLine($"-> Seeding '{item.Title}'...");
+                dbContext.MediaItems.Add(item);
+            }
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
         // 4. Seed Playlists
         var publicPlaylist = await dbContext.Playlists.FirstOrDefaultAsync(p => p.Title == "Test Public Playlist", cancellationToken);
         if (publicPlaylist == null)

@@ -2,9 +2,22 @@ import { useEffect, useRef, useState } from 'react';
 import { usePlayerStore } from '../stores/usePlayerStore';
 
 export function VideoPlayerPage() {
-  const { currentTrack, stop } = usePlayerStore();
+  const { currentTrack, stop, setDuration } = usePlayerStore();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      const handleLoadedMetadata = () => {
+        setDuration(video.duration || 0);
+      };
+      video.addEventListener('loadedmetadata', handleLoadedMetadata);
+      return () => {
+        video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      };
+    }
+  }, [currentTrack, setDuration]);
 
   useEffect(() => {
     if (videoRef.current && currentTrack?.src) {

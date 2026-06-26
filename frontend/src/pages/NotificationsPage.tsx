@@ -17,6 +17,15 @@ export function NotificationsPage() {
 
   useEffect(() => {
     fetchNotifications();
+
+    const handleNewNotification = () => {
+      void fetchNotifications();
+    };
+
+    window.addEventListener('new-notification', handleNewNotification);
+    return () => {
+      window.removeEventListener('new-notification', handleNewNotification);
+    };
   }, []);
 
   const fetchNotifications = async () => {
